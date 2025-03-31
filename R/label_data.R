@@ -31,7 +31,7 @@
 
 label_data <- function(x=NULL, codebook=NULL){
 
-  ldf <- matchmaker::match_df(x, codebook)
+  ldf <- matchmaker::match_df(x, codebook, from = "options", to = "values", by = "grp")
   return(ldf)
 
 }
