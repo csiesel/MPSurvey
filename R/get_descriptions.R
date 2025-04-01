@@ -2,10 +2,10 @@
 #'
 #' @param path
 #'
-#' @return asdf
+#' @return
 #' @export
 #'
-#' @examples asdf
+#' @examples
 get_descriptions <- function(path = NULL){
   x <- jsonlite::fromJSON(path, simplifyDataFrame = TRUE)[[1]]
   x <- tibble::as_tibble(x)

@@ -2,10 +2,10 @@
 #'
 #' @param desc
 #'
-#' @return asdf
+#' @return
 #' @export
 #'
-#' @examples asdf
+#' @examples
 survey_variables <- function(desc=NULL){
   survey_vars <- DataEditR::data_edit(desc,
                                       col_readonly = c("var", "desc"),

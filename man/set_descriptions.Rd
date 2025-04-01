@@ -9,12 +9,6 @@ set_descriptions(path = NULL, x = NULL)
 \arguments{
 \item{x}{}
 }
-\value{
-asdf
-}
 \description{
 set_descriptions
-}
-\examples{
-asdf
 }

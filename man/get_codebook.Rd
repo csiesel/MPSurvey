@@ -10,11 +10,8 @@ get_codebook(path = NULL)
 \item{path}{}
 }
 \value{
-asdf
+get_codebook
 }
 \description{
 get_codebook
-}
-\examples{
-asdf
 }

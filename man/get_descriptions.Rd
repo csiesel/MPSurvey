@@ -9,12 +9,6 @@ get_descriptions(path = NULL)
 \arguments{
 \item{path}{}
 }
-\value{
-asdf
-}
 \description{
 get_descriptions
-}
-\examples{
-asdf
 }

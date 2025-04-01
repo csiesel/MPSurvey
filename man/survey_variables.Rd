@@ -9,12 +9,6 @@ survey_variables(desc = NULL)
 \arguments{
 \item{desc}{}
 }
-\value{
-asdf
-}
 \description{
 survey_variables
-}
-\examples{
-asdf
 }

@@ -2,7 +2,9 @@
 
 export(get_codebook)
 export(get_descriptions)
+export(get_inr)
 export(label_data)
-export(recode)
+export(mps_design)
+export(recode_var)
 export(set_descriptions)
 export(survey_variables)

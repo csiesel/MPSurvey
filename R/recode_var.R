@@ -1,14 +1,15 @@
-#' recode
+#' recode_var
 #'
-#' @param x
-#' @param vars
-#' @param new_var
+#' @param x asdf
+#' @param vars asdf
+#' @param new_var asdf
 #'
-#' @return asdf
+#' @return
 #' @export
 #'
-#' @examples asdf
-recode <- function(x, vars, new_var){
+#' @examples
+#' # hello
+recode_var <- function(x, vars, new_var){
 
   grouped_df <- x |>
     dplyr::group_by(across(all_of(vars))) |>

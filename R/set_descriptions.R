@@ -3,10 +3,10 @@
 #' @param path
 #' @param x
 #'
-#' @return asdf
+#' @return
 #' @export
 #'
-#' @examples asdf
+#' @examples
 set_descriptions <- function(path=NULL,
                              x=NULL){
   `%!in%`= Negate(`%in%`)
