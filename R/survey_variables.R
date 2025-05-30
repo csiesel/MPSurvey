@@ -1,11 +1,17 @@
-#' survey_variables
+#' Select Survey Variables for Analysis
 #'
-#' @param desc
+#' This function allows the user to select which variables to analyze from a given description data frame. The function returns a vector of variable names that are selected for analysis.
 #'
-#' @return
+#' @param desc A data frame or tibble containing variable descriptions. Default is NULL.
+#'
+#' @return A character vector of variable names that are selected for analysis.
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' # Example usage:
+#' selected_vars <- survey_variables(desc = your_description_dataframe)
+#' }
 survey_variables <- function(desc=NULL){
   survey_vars <- DataEditR::data_edit(desc,
                                       col_readonly = c("var", "desc"),

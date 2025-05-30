@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_inr.R
 \name{get_inr}
 \alias{get_inr}
-\title{get_inr}
+\title{Calculate Item Non-Response (INR) Rates}
 \usage{
 get_inr(
   mps = NULL,
@@ -12,8 +12,25 @@ get_inr(
 )
 }
 \arguments{
-\item{skip_words}{}
+\item{mps}{A survey design object created using the \code{srvyr} package. Default is NULL.}
+
+\item{vars}{A character vector of variable names for which to calculate INR rates. Default is NULL.}
+
+\item{include_skips}{A logical value indicating whether to include skip patterns in the analysis. Default is FALSE.}
+
+\item{skip_words}{A character vector of words indicating skip patterns (e.g., "Skip", "REFUSED"). Default is c("Skip", "SKIP", "skip", "REFUSED", "Refused", "refused").}
+}
+\value{
+A list containing two elements: \code{inr} (a tibble with INR rates) and \code{responses} (a tibble with response distributions).
 }
 \description{
-get_inr
+This function calculates the item non-response (INR) rates for specified variables in a survey design object. It returns a list containing the INR rates and the response distributions for each variable.
+}
+\examples{
+\dontrun{
+# Example usage:
+inr_results <- get_inr(mps = your_survey_design, vars = c("var1", "var2"), include_skips = FALSE)
+inr <- inr_results$inr
+responses <- inr_results$responses
+}
 }

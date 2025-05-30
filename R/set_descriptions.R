@@ -1,12 +1,18 @@
-#' set_descriptions
+#' Set Descriptions for Variables
 #'
-#' @param path
-#' @param x
+#' This function reads a JSON file from the specified path to get existing descriptions, and then allows the user to set new descriptions for variables that are not already described. The function returns a tibble with variable names and their corresponding descriptions.
 #'
-#' @return
+#' @param path A character string specifying the path to the JSON file. Default is NULL.
+#' @param x A data frame or tibble containing the variables for which descriptions need to be set. Default is NULL.
+#'
+#' @return A tibble with two columns: `var` (variable names) and `desc` (descriptions).
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' # Example usage:
+#' descriptions <- set_descriptions(path = "path/to/your/jsonfile.json", x = your_dataframe)
+#' }
 set_descriptions <- function(path=NULL,
                              x=NULL){
   `%!in%`= Negate(`%in%`)

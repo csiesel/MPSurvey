@@ -2,13 +2,30 @@
 % Please edit documentation in R/mps_design.R
 \name{mps_design}
 \alias{mps_design}
-\title{mps_design}
+\title{Create Survey Design Object}
 \usage{
 mps_design(df = NULL, ids, strata, weight, vars)
 }
 \arguments{
-\item{vars}{}
+\item{df}{A data frame containing the survey data. Default is NULL.}
+
+\item{ids}{A column name in the data frame representing the cluster or primary sampling unit (PSU) IDs.}
+
+\item{strata}{A column name in the data frame representing the strata.}
+
+\item{weight}{A column name in the data frame representing the survey weights.}
+
+\item{vars}{A character vector of variable names to include in the survey design.}
+}
+\value{
+A survey design object created using the \code{srvyr} package.
 }
 \description{
-mps_design
+This function creates a survey design object using the \code{srvyr} package. It takes a data frame and specified columns for IDs, strata, weights, and variables, and returns a survey design object.
+}
+\examples{
+\dontrun{
+# Example usage:
+survey_design <- mps_design(df = your_dataframe, ids = "psu_id", strata = "strata", weight = "weight", vars = c("var1", "var2", "var3"))
+}
 }

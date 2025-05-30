@@ -2,13 +2,22 @@
 % Please edit documentation in R/get_descriptions.R
 \name{get_descriptions}
 \alias{get_descriptions}
-\title{get_descriptions}
+\title{Get Descriptions from JSON File}
 \usage{
 get_descriptions(path = NULL)
 }
 \arguments{
-\item{path}{}
+\item{path}{A character string specifying the path to the JSON file. Default is NULL.}
+}
+\value{
+A tibble with two columns: \code{var} (variable names) and \code{desc} (descriptions).
 }
 \description{
-get_descriptions
+This function reads a JSON file from the specified path, extracts descriptions, and returns a tibble with variable names and their corresponding descriptions.
+}
+\examples{
+\dontrun{
+# Example usage:
+descriptions <- get_descriptions("path/to/your/jsonfile.json")
+}
 }

@@ -2,13 +2,22 @@
 % Please edit documentation in R/survey_variables.R
 \name{survey_variables}
 \alias{survey_variables}
-\title{survey_variables}
+\title{Select Survey Variables for Analysis}
 \usage{
 survey_variables(desc = NULL)
 }
 \arguments{
-\item{desc}{}
+\item{desc}{A data frame or tibble containing variable descriptions. Default is NULL.}
+}
+\value{
+A character vector of variable names that are selected for analysis.
 }
 \description{
-survey_variables
+This function allows the user to select which variables to analyze from a given description data frame. The function returns a vector of variable names that are selected for analysis.
+}
+\examples{
+\dontrun{
+# Example usage:
+selected_vars <- survey_variables(desc = your_description_dataframe)
+}
 }

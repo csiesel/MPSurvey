@@ -1,19 +1,29 @@
-#' get_inr
+#' Calculate Item Non-Response (INR) Rates
 #'
-#' @param mps
-#' @param vars
-#' @param include_skips
-#' @param skip_words
+#' This function calculates the item non-response (INR) rates for specified variables in a survey design object. It returns a list containing the INR rates and the response distributions for each variable.
 #'
-#' @return
+#' @param mps A survey design object created using the `srvyr` package. Default is NULL.
+#' @param vars A character vector of variable names for which to calculate INR rates. Default is NULL.
+#' @param include_skips A logical value indicating whether to include skip patterns in the analysis. Default is FALSE.
+#' @param skip_words A character vector of words indicating skip patterns (e.g., "Skip", "REFUSED"). Default is c("Skip", "SKIP", "skip", "REFUSED", "Refused", "refused").
+#'
+#' @return A list containing two elements: `inr` (a tibble with INR rates) and `responses` (a tibble with response distributions).
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' # Example usage:
+#' inr_results <- get_inr(mps = your_survey_design, vars = c("var1", "var2"), include_skips = FALSE)
+#' inr <- inr_results$inr
+#' responses <- inr_results$responses
+#' }
 get_inr <- function(mps=NULL, vars=NULL, include_skips=FALSE, skip_words=c("Skip", "SKIP", "skip", "REFUSED", "Refused", "refused")){
   # Check if mps is provided and has the 'variables' attribute
-  if (is.null(mps) || !("variables" %in% names(mps))) {
-    stop("Invalid mps object: Please provide a valid survey design object.")
-  }
+  # if (is.null(mps) || !("variables" %in% names(mps))) {
+  #   stop("Invalid mps object: Please provide a valid survey design object.")
+  # }
+
+  vars = vars[which(vars %in% names(mps$variables))]
 
   df = mps$variables |>
     dplyr::select(dplyr::all_of(vars))
@@ -30,16 +40,18 @@ get_inr <- function(mps=NULL, vars=NULL, include_skips=FALSE, skip_words=c("Skip
     dplyr::group_by(name, value) |>
     dplyr::summarise(n=dplyr::n()) |>
     dplyr::group_by(name) |>
-    mutate(total_resp = sum(n),
+    mutate(total_resp = sum(n) - sum(n[which(value =="NOT APPLICABLE")]),
            perc = n/total_resp*100)
 
   inr <- df_group |>
     dplyr::group_by(name) |>
-    dplyr::reframe(perc_non_response =  100 - sum(perc[which(!is.na(value))]),
-                     n_resp = sum(n[which(!is.na(value))]),
+    dplyr::reframe(perc_non_response =  100 - (sum(perc[which(!is.na(value))]) - sum(perc[which(value=="NOT APPLICABLE")])),
+                     n_resp = sum(n[which(!is.na(value))]) - sum(n[which(value=="NOT APPLICABLE")]),
                      total = total_resp) |>
     dplyr::distinct()
 
-  View(df_group)
-  View(inr)
+  # View(df_group)
+  # View(inr)
+  return(list("inr"=inr,
+              "responses"=df_group))
 }

@@ -2,20 +2,26 @@
 % Please edit documentation in R/recode_var.R
 \name{recode_var}
 \alias{recode_var}
-\title{recode_var}
+\title{Recode Variables in a Data Frame}
 \usage{
 recode_var(x, vars, new_var)
 }
 \arguments{
-\item{x}{asdf}
+\item{x}{A data frame or tibble containing the data to be recoded.}
 
-\item{vars}{asdf}
+\item{vars}{A character vector of variable names to be recoded.}
 
-\item{new_var}{asdf}
+\item{new_var}{A character string specifying the name of the new recoded variable.}
+}
+\value{
+A data frame with the recoded variable.
 }
 \description{
-recode_var
+This function recodes specified variables in a data frame by grouping them, summarizing the counts, and allowing the user to manually input new values for the recoded variable. The function returns an updated data frame with the recoded variable.
 }
 \examples{
-# hello
+\dontrun{
+# Example usage:
+updated_data <- recode_var(x = your_data, vars = c("var1", "var2"), new_var = "new_var")
+}
 }

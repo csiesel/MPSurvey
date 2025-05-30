@@ -2,16 +2,22 @@
 % Please edit documentation in R/get_codebook.R
 \name{get_codebook}
 \alias{get_codebook}
-\title{get_codebook}
+\title{Extract Codebook from JSON File}
 \usage{
 get_codebook(path = NULL)
 }
 \arguments{
-\item{path}{}
+\item{path}{A character string specifying the path to the JSON file containing the codebook information. Default is NULL.}
 }
 \value{
-get_codebook
+A data frame containing the codebook information, including variable names, values, and response options.
 }
 \description{
-get_codebook
+This function reads a JSON file from the specified path, extracts the codebook information, and returns a data frame with the variable names, values, and response options.
+}
+\examples{
+\dontrun{
+# Example usage:
+codebook <- get_codebook(path = "path/to/your/codebook.json")
+}
 }

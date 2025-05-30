@@ -1,22 +1,26 @@
-#' get_codebook
+#' Extract Codebook from JSON File
 #'
-#' @param path
+#' This function reads a JSON file from the specified path, extracts the codebook information, and returns a data frame with the variable names, values, and response options.
 #'
-#' @return get_codebook
+#' @param path A character string specifying the path to the JSON file containing the codebook information. Default is NULL.
+#'
+#' @return A data frame containing the codebook information, including variable names, values, and response options.
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' # Example usage:
+#' codebook <- get_codebook(path = "path/to/your/codebook.json")
+#' }
 get_codebook <- function(path = NULL){
   x <- jsonlite::fromJSON(path, simplifyDataFrame = TRUE)[[1]]
   x <- tibble::as_tibble(x)
 
   codes <- data.frame()
   for(i in 2:nrow(x)){
-    print(i)
     prompts <- x$steps[i][[1]]$store[which(x$steps[i][[1]]$type=="multiple-choice")]
     prompt_df <- data.frame()
     for(q in prompts){
-      print(q)
       num_row =  nrow(x$steps[i][[1]]$choices[which(x$steps[i][[1]]$store==q)][[1]])
       temp_prompt_df <- data.frame("var" = rep(q, num_row))
       prompt_df <- dplyr::bind_rows(prompt_df, temp_prompt_df)

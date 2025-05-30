@@ -2,13 +2,24 @@
 % Please edit documentation in R/set_descriptions.R
 \name{set_descriptions}
 \alias{set_descriptions}
-\title{set_descriptions}
+\title{Set Descriptions for Variables}
 \usage{
 set_descriptions(path = NULL, x = NULL)
 }
 \arguments{
-\item{x}{}
+\item{path}{A character string specifying the path to the JSON file. Default is NULL.}
+
+\item{x}{A data frame or tibble containing the variables for which descriptions need to be set. Default is NULL.}
+}
+\value{
+A tibble with two columns: \code{var} (variable names) and \code{desc} (descriptions).
 }
 \description{
-set_descriptions
+This function reads a JSON file from the specified path to get existing descriptions, and then allows the user to set new descriptions for variables that are not already described. The function returns a tibble with variable names and their corresponding descriptions.
+}
+\examples{
+\dontrun{
+# Example usage:
+descriptions <- set_descriptions(path = "path/to/your/jsonfile.json", x = your_dataframe)
+}
 }
