@@ -20,12 +20,16 @@ analyze_survey <- function(mps, vars){
     dplyr::mutate(dplyr::across(dplyr::everything(), ~ifelse(. %in% "NOT APPLICABLE", NA, .)))
 
 
+  gtsummary::theme_gtsummary_compact()
+  list("style_number-arg:big.mark" = "") %>%
+    gtsummary::set_gtsummary_theme()
+
   gtsummary_indicators <- mps %>%
     # Selecting all indicators
     select(dplyr::all_of(c(vars, names(mps$strata)))) %>%
     # Similar tbl_svysummary as above with a few differences
     gtsummary::tbl_svysummary(by = sex,
-                   digits = list(gtsummary::all_categorical() ~ c(1,1,1)),
+                   digits = list(gtsummary::all_categorical() ~ c(0,0,1,1,1)),
                    # Setting the varible type as continuous for the days indicators
                    # type = list(fruit_days ~ "continuous",
                    #             fruit_servings ~ "continuous",
@@ -36,10 +40,10 @@ analyze_survey <- function(mps, vars){
                    missing = "no",
                    statistic = list(
                      # Formatting the continuous variables to be presented as mean and standard deviation
-                     gtsummary::all_continuous() ~ "{mean} ({sd})",
-                     gtsummary::all_categorical() ~ "{p}%")) %>%
+                     gtsummary::all_continuous() ~ "{n_unweighted}/{N_unweighted}/n{mean} ({sd})",
+                     gtsummary::all_categorical() ~ "{n_unweighted}/{N_unweighted}\n{p}%")) %>%
     gtsummary::add_overall() %>%
-    gtsummary::add_n() %>%
+    # gtsummary::add_n(statistic="{N_nonmiss_unweighted}", location="level") %>%
     gtsummary::add_ci(style_fun = list(
       gtsummary::all_continuous() ~ gtsummary::label_style_number(digits = 2),
       gtsummary::all_categorical() ~ gtsummary::label_style_percent(digits=2))) %>%
