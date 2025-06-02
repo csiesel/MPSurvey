@@ -1,6 +1,6 @@
 Package: MPSurvey
 Title: Mobile Phone Survey Data Analysis
-Version: 0.0.0.9000
+Version: 0.0.0.9510
 Authors@R: 
     person("Casey", "Siesel", , "siesel.casey@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).

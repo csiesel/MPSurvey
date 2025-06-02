@@ -2,6 +2,7 @@
 
 export(analyze_survey)
 export(apply_skiplogic)
+export(export_results)
 export(get_codebook)
 export(get_descriptions)
 export(get_inr)
