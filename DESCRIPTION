@@ -18,3 +18,7 @@ Imports:
     matchmaker
 Depends: 
     dplyr
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
