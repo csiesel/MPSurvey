@@ -1,6 +1,6 @@
 Package: MPSurvey
 Title: MPSurvey: Mobile Phone Survey Data Analysis
-Version: 0.0.0.9510
+Version: 1.0.0
 Authors@R: 
     person("Casey", "Siesel", , "siesel.casey@gmail.com", role = c("aut", "cre"))
 Description: A set of functions for analyzing mobile phone survey data that were collected using the Surveda mobile phone survey tool.
@@ -15,7 +15,8 @@ Imports:
     DataEditR,
     epikit,
     gtsummary,
-    matchmaker
+    matchmaker,
+    DiagrammeR
 Depends: 
     dplyr
 Suggests: 

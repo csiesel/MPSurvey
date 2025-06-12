@@ -115,12 +115,24 @@ get_skiplogic <- function(path = NULL){
 
     if(nrow(skip_df)>0){
       responses_df <- data.frame("responses"=responses)
-      responses_df <- responses_df |>
-        mutate(responses.response = unlist(as.character(responses.response))) |>
-        rowwise() |>
-        mutate(skip = ifelse(is.na(responses.skip_logic),
-                                             "next question",
-                                             unique(quex_df$var[which(quex_df$id==responses.skip_logic)])))
+
+     if("responses.response" %in% names(responses_df)){
+       responses_df <- responses_df |>
+         mutate(responses.response = unlist(as.character(responses.response))) |>
+         rowwise() |>
+         mutate(skip = ifelse(is.na(responses.skip_logic),
+                              "next question",
+                              unique(quex_df$var[which(quex_df$id==responses.skip_logic)])))
+     } else{
+       responses_df <- responses_df |>
+         mutate(responses.response = "NULL") |>
+         rowwise() |>
+         mutate(skip = ifelse(is.na(responses.skip_logic),
+                              "next question",
+                              unique(quex_df$var[which(quex_df$id==responses.skip_logic)])))
+
+     }
+
       codes <- dplyr::bind_rows(codes, dplyr::bind_cols(skip_df, responses_df))
 
     }
