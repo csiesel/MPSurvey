@@ -28,7 +28,8 @@ pak::pak("csiesel/MPSurvey")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which shows you how to solve a common problem in
+R:
 
 ``` r
 library(MPSurvey)

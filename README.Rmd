@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The goal of MPSurvey is to reduce the burden of analyzing mobile phone surveys that utilize the [Surveda](https://surveda.instedd.org/) mobile phone survey tool. The functions in this package cover all aspects of analysis including applying data labels, identifying skip logic patterns, calculating item nonresponse, and analyzing weighted survey data.
+The goal of MPSurvey is to reduce the burden of analyzing mobile phone surveys that utilize the [Surveda](https://surveda.instedd.org/) mobile phone survey tool. The functions in this package cover all aspects of analysis including applying data labels, identifying skip logic patterns, calculating item nonresponse, and analyzing weighted survey data. 
 
 ## Installation
 
@@ -34,7 +34,7 @@ pak::pak("csiesel/MPSurvey")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which shows you how to solve a common problem in R:
 
 ```{r example}
 library(MPSurvey)
