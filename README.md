@@ -5,8 +5,7 @@
 
 <!-- badges: start -->
 
-![](images/MPSurvey.png)
-
+![](https://github.com/csiesel/MPSurvey/blob/master/images/MPSurvey.png?raw=true)
 <!-- badges: end -->
 
 The goal of MPSurvey is to reduce the burden of analyzing mobile phone
