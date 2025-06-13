@@ -3,9 +3,12 @@
 
 # MPSurvey
 
-<!-- badges: start -->
+<div align="center">
 
-![](https://github.com/csiesel/MPSurvey/blob/master/images/MPSurvey.png?raw=true)
+<hr style="color:transparent" />
+<a href='https://csiesel.github.io/MPSurvey/'><img src="man/figures/MPSurvey.png" width="350px"/></a>
+<hr style="color:transparent"/>
+<!-- badges: start -->
 <!-- badges: end -->
 
 The goal of MPSurvey is to reduce the burden of analyzing mobile phone

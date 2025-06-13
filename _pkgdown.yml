@@ -2,3 +2,7 @@ url: https://csiesel.github.io/MPSurvey/
 template:
   bootstrap: 5
 
+reference:
+- title: Loading survey metadata
+- contents:
+  - get_codebook
