@@ -11,6 +11,8 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
+</div>
+
 The goal of MPSurvey is to reduce the burden of analyzing mobile phone
 surveys that utilize the [Surveda](https://surveda.instedd.org/) mobile
 phone survey tool. The functions in this package cover all aspects of
