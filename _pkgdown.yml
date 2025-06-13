@@ -1,8 +1,28 @@
 url: https://csiesel.github.io/MPSurvey/
 template:
-  bootstrap: 5
+  bootstrap: 3
 
 reference:
 - title: Loading survey metadata
 - contents:
   - get_codebook
+  - get_descriptions
+  - get_skiplogic
+- title: Manipulating data
+- contents:
+  - label_data
+  - apply_skiplogic
+  - recode_var
+  - set_descriptions
+- title: Analyzing data
+- contents:
+  - survey_variables
+  - mps_design
+  - get_inr
+  - analyze_survey
+  - analyze_survey2
+- title: Exporting results and others
+- contents:
+  - export_results
+  - export_results2
+  - visualize_quex
