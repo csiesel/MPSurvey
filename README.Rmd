@@ -16,6 +16,9 @@ knitr::opts_chunk$set(
 # MPSurvey
 
 <!-- badges: start -->
+
+![](images/MPSurvey.png)
+
 <!-- badges: end -->
 
 The goal of MPSurvey is to reduce the burden of analyzing mobile phone surveys that utilize the [Surveda](https://surveda.instedd.org/) mobile phone survey tool. The functions in this package cover all aspects of analysis including applying data labels, identifying skip logic patterns, calculating item nonresponse, and analyzing weighted survey data.
@@ -45,6 +48,5 @@ summary(cars)
 ```
 
 You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
-
 
 In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.

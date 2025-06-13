@@ -16,6 +16,9 @@
 visualize_quex <- function(path=NULL, file=NULL){
   skips <-get_skiplogic(path=path)
 
+  skips <- skips  %>%
+    mutate(skip = ifelse(skip=="next question", NA, skip))
+
 
 
   # Function to fill NA values in 'skip' column
@@ -28,8 +31,11 @@ visualize_quex <- function(path=NULL, file=NULL){
       if (is.na(df$skip[i])) {
         # Find the next relevant index
         next_relevant <- relevant_indices[which(relevant_indices > i & df$var[i]!=df$var[relevant_indices])]
-        if(df$var[i] %in% c("intro", "age")) {
+        if(df$var[i] %in% c("intro", "intro1", "age")) {
           df$skip[i] <- "end"
+        }
+        else if (df$var[i] %in% c("gender")){
+          df$skip[i] <- "age"
         }
         else if (length(next_relevant) > 0) {
           # Fill NA with the corresponding 'var' value
@@ -59,7 +65,7 @@ visualize_quex <- function(path=NULL, file=NULL){
     rowwise() %>%
     mutate(from = node_df$id[which(node_df$label==from)],
            to = node_df$id[which(node_df$label==to)]) %>%
-    mutate(rel = ifelse(rel=="Don't know", "Dont know", rel)) %>%
+    mutate(rel = ifelse(rel %in% c("Don't know", "Don't Know"), "Dont know", rel)) %>%
     mutate(label = rel)
 
 
