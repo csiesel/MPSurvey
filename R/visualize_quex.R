@@ -4,6 +4,7 @@
 #'
 #' @param path A character string specifying the path to the JSON file containing skip logic rules. Default is NULL.
 #' @param file A character string specifying the file name to save the graph visualization (.pdf, .svg, .png). Default is NULL.
+#' @param responses A dataframe from the output of get_inr and the 'responses' dataframe from the list output. Default is NULL.
 #'
 #' @return A graph object visualizing the skip logic of the questionnaire.
 #' @export
@@ -13,7 +14,7 @@
 #' # Example usage:
 #' visualize_quex(path = "path/to/your/skiplogic.json", file = "skip_logic_graph.png")
 #' }
-visualize_quex <- function(path=NULL, file=NULL){
+visualize_quex <- function(path=NULL, file=NULL, responses=NULL){
   skips <-get_skiplogic(path=path)
 
   skips <- skips  %>%
@@ -61,19 +62,32 @@ visualize_quex <- function(path=NULL, file=NULL){
                             label = unique(filled_data$var)) %>%
     add_row(id=length(unique(filled_data$var))+1, label="end")
 
-  edges_df <- edges %>%
-    rowwise() %>%
-    mutate(from = node_df$id[which(node_df$label==from)],
-           to = node_df$id[which(node_df$label==to)]) %>%
-    mutate(rel = ifelse(rel %in% c("Don't know", "Don't Know"), "Dont know", rel)) %>%
-    mutate(label = rel)
+
+
+  if(is.null(responses)){
+    edges_df <- edges %>%
+      rowwise() %>%
+      mutate(from = node_df$id[which(node_df$label==from)],
+             to = node_df$id[which(node_df$label==to)]) %>%
+      mutate(rel = ifelse(rel %in% c("Don't know", "Don't Know"), "Dont know", rel)) %>%
+      mutate(label = rel)
+  } else{
+    edges_df <- edges %>%
+      merge(responses, by.x=c("from", "rel"), by.y=c("name", "value"), all.x=TRUE) %>%
+      rowwise() %>%
+      mutate(from = node_df$id[which(node_df$label==from)],
+             to = node_df$id[which(node_df$label==to)]) %>%
+      mutate(rel = ifelse(rel %in% c("Don't know", "Don't Know"), "Dont know", rel)) %>%
+      mutate(label = paste0(rel, "\n", n))
+  }
+
 
 
   graph_diag <- DiagrammeR::create_graph(nodes_df = node_df,
                              edges_df = edges_df,
                              attr_theme = "lr")
 
-  # render_graph(graph_diag)
+  DiagrammeR::render_graph(graph_diag)
 
   graph_diag %>% DiagrammeR::export_graph(file_name = file, title="Questionnaire Skip Logic")
 

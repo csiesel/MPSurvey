@@ -4,12 +4,14 @@
 \alias{visualize_quex}
 \title{Visualize Questionnaire Skip Logic}
 \usage{
-visualize_quex(path = NULL, file = NULL)
+visualize_quex(path = NULL, file = NULL, responses = NULL)
 }
 \arguments{
 \item{path}{A character string specifying the path to the JSON file containing skip logic rules. Default is NULL.}
 
 \item{file}{A character string specifying the file name to save the graph visualization (.pdf, .svg, .png). Default is NULL.}
+
+\item{responses}{A dataframe from the output of get_inr and the 'responses' dataframe from the list output. Default is NULL.}
 }
 \value{
 A graph object visualizing the skip logic of the questionnaire.
