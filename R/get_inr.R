@@ -2,7 +2,7 @@
 #'
 #' This function calculates the item non-response (INR) rates for specified variables in a survey design object. It returns a list containing the INR rates and the response distributions for each variable.
 #'
-#' @param mps A survey design object created using the `srvyr` package. Default is NULL.
+#' @param x A data frame containing the final data for the survey analysis. Default is NULL.
 #' @param vars A character vector of variable names for which to calculate INR rates. Default is NULL.
 #' @param include_skips A logical value indicating whether to include skip patterns in the analysis. Default is FALSE.
 #' @param skip_words A character vector of words indicating skip patterns (e.g., "Skip", "REFUSED"). Default is c("Skip", "SKIP", "skip", "REFUSED", "Refused", "refused").
@@ -17,21 +17,21 @@
 #' inr <- inr_results$inr
 #' responses <- inr_results$responses
 #' }
-get_inr <- function(mps=NULL, vars=NULL, include_skips=FALSE, skip_words=c("Skip", "SKIP", "skip", "REFUSED", "Refused", "refused")){
-  # Check if mps is provided and has the 'variables' attribute
-  # if (is.null(mps) || !("variables" %in% names(mps))) {
-  #   stop("Invalid mps object: Please provide a valid survey design object.")
-  # }
+get_inr <- function(x=NULL, vars=NULL, include_skips=FALSE, skip_words=c("Skip", "SKIP", "skip", "REFUSED", "Refused", "refused")){
 
-  vars = vars[which(vars %in% names(mps$variables))]
 
-  df = mps$variables |>
+  vars = vars[which(vars %in% names(x))]
+
+  df = x |>
     dplyr::select(dplyr::all_of(vars))
 
   if(include_skips==FALSE){
     df = df |>
       dplyr::mutate_all(~as.character(.)) |>
       dplyr::mutate(dplyr::across(dplyr::everything(), ~ifelse(. %in% skip_words, NA, .)))
+  } else{
+    df = df |>
+      dplyr::mutate_all(~as.character(.))
   }
 
 

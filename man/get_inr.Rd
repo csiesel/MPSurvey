@@ -5,14 +5,14 @@
 \title{Calculate Item Non-Response (INR) Rates}
 \usage{
 get_inr(
-  mps = NULL,
+  x = NULL,
   vars = NULL,
   include_skips = FALSE,
   skip_words = c("Skip", "SKIP", "skip", "REFUSED", "Refused", "refused")
 )
 }
 \arguments{
-\item{mps}{A survey design object created using the \code{srvyr} package. Default is NULL.}
+\item{x}{A data frame containing the final data for the survey analysis. Default is NULL.}
 
 \item{vars}{A character vector of variable names for which to calculate INR rates. Default is NULL.}
 
