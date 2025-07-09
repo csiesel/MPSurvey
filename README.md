@@ -25,4 +25,7 @@ data.
 You can install the development version of MPSurvey from
 [GitHub](https://github.com/) with:
 
-\``r # install.packages("pak") pak::pak("csiesel/MPSurvey")`
+``` r
+# install.packages("pak")
+pak::pak("csiesel/MPSurvey")
+```

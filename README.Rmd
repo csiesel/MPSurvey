@@ -35,4 +35,4 @@ You can install the development version of MPSurvey from [GitHub](https://github
 ``` r
 # install.packages("pak")
 pak::pak("csiesel/MPSurvey")
-``
+```
