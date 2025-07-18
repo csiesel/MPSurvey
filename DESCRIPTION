@@ -22,5 +22,6 @@ Depends:
 Suggests: 
     knitr,
     rmarkdown,
-    DT
+    DT,
+    cardx
 VignetteBuilder: knitr
