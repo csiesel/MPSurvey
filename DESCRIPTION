@@ -4,7 +4,7 @@ Version: 1.0.1
 Authors@R: 
     person("Casey", "Siesel", , "siesel.casey@gmail.com", role = c("aut", "cre"))
 Description: A set of functions for analyzing mobile phone survey data that were collected using the Surveda mobile phone survey tool.
-License: use_gpl3_license()
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
