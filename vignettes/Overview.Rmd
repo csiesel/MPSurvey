@@ -59,7 +59,7 @@ rw_publicuse_4483 <- read.csv("rw_publicuse_4483.csv")
 ```
 
 ```{r load_data_output, echo=FALSE}
-DT::datatable((rw_publicuse_4483), options = list(scrollX = TRUE))
+DT::datatable((rw_publicuse_4483), options = list(pageLength=5, scrollX = TRUE))
 ```
 
 ## Importing codebook
@@ -75,7 +75,7 @@ codebook <- get_codebook(path = "manifest.json")
 ```
 
 ```{r codebook_output, echo=FALSE}
-DT::datatable(codebook, options = list(scrollX = TRUE))
+DT::datatable(codebook, options = list(pageLength=5, scrollX = TRUE))
 ```
 
 ## Importing variable descriptions
@@ -91,7 +91,7 @@ descriptions <- get_descriptions(path = "manifest.json")
 ```
 
 ```{r desc_output, echo=FALSE}
-DT::datatable(descriptions, options = list(scrollX = TRUE))
+DT::datatable(descriptions, options = list(pageLength=5, scrollX = TRUE))
 ```
 
 ## Importing skip logic
@@ -107,7 +107,7 @@ skip <- get_skiplogic(path = "manifest.json")
 ```
 
 ```{r skip_output, echo=FALSE}
-DT::datatable(skip, options = list(scrollX = TRUE))
+DT::datatable(skip, options = list(pageLength=5, scrollX = TRUE))
 ```
 
 These inputs are used in data manipulation, analysis, and exporting functions and the above functions are frequently referenced within processing steps.
@@ -122,7 +122,7 @@ The first step in the data manipulation process is to apply data labels to the s
 rw_label <- label_data(rw_publicuse_4483, codebook = codebook)
 ```
 
-```{r label_data_output}
+```{r label_data_output, echo=FALSE}
 DT::datatable(rw_label, options = list(pageLength=5, scrollX = TRUE))
 ```
 
@@ -138,7 +138,7 @@ rw_label_skip <- apply_skiplogic(path = "manifest.json", x = rw_label)
 rw_label_skip <- apply_skiplogic(path = "manifest.json", x = rw_label)
 ```
 
-```{r label_skip_output}
+```{r label_skip_output, echo=FALSE}
 DT::datatable(rw_label_skip,
               options = list(pageLength=5, scrollX = TRUE))
 ```
@@ -236,8 +236,8 @@ inr <- get_inr(rw_analysis, vars=vars, include_skips = FALSE)
 The output of this function is a list of two dataframes. The first, `inr`, contains one row for each variable of interest with the percent non-response (`perc_non_response`), the total number of valid responses (`n_resp`), and the total number of eligible respondents for the question (`total`). The second dataframe, `responses`, shows the total number of responses for each potential response option for all variables of interest.
 
 ```{r inr_output, echo=FALSE}
-DT::datatable(inr$inr, options = list(scrollX = TRUE))
-DT::datatable(inr$responses, options = list(scrollX = TRUE))
+DT::datatable(inr$inr, options = list(pageLength=5, scrollX = TRUE))
+DT::datatable(inr$responses, options = list(pageLength=5, scrollX = TRUE))
 
 ```
 
