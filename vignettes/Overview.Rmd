@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 	warning = FALSE
 )
 library(MPSurvey)
+library(DT)
 ```
 
 # Walkthrough Overview
