@@ -4,7 +4,7 @@
 \alias{analyze_survey2}
 \title{Analyze Survey Data (v2)}
 \usage{
-analyze_survey2(mps, vars, strata)
+analyze_survey2(mps, vars)
 }
 \arguments{
 \item{mps}{A survey design object created using the \code{srvyr} package.}

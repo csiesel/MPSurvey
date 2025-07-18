@@ -17,7 +17,7 @@ get_skiplogic <- function(path = NULL){
   x <- tibble::as_tibble(x)
 
   codes <- data.frame()
-  for(i in 2:nrow(x %>% filter(!grepl("complete", x$title, ignore.case=T)))){
+  for(i in 2:nrow(x %>% filter(!grepl("complet", x$title, ignore.case=T)))){
     prompts <- x$steps[i][[1]]$store[!is.na(x$steps[i][[1]]$store)]
     ids <- x$steps[i][[1]]$id[!is.na(x$steps[i][[1]]$store)]
     types <- x$steps[i][[1]]$type[!is.na(x$steps[i][[1]]$store)]

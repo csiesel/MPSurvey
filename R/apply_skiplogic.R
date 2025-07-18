@@ -33,7 +33,7 @@ apply_skiplogic <- function(path=NULL, x=NULL){
       mutate(!!sym(i) := na_if(!!sym(i), ""))
 
 
-    if(!all(is.na(skips$relevant[which(skips$var==i)])) & all(skips$relevant[which(skips$var==i)]!=FALSE)){
+    if(!all(is.na(skips$relevant[which(skips$var==i)])) & all(skips$relevant[which(skips$var==i)]!=FALSE) & length(parent_vars)==0 & all(skips$relevant[which(skips$var==i)])==FALSE){
       x <- x |>
         mutate(!!sym(i) := !!sym(i))
     } else if(length(parent_vars)>1){

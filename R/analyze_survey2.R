@@ -13,7 +13,7 @@
 #' # Example usage:
 #' summary_table <- analyze_survey(mps = your_survey_design, vars = c("var1", "var2", "var3"))
 #' }
-analyze_survey2 <- function(mps, vars, strata){
+analyze_survey2 <- function(mps, vars){
 
 
   mps$variables <- mps$variables %>%
