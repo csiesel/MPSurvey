@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">MPSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -60,7 +60,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">visualize_quex</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, file <span class="op">=</span> <span class="cn">NULL</span>, responses <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">visualize_quex</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, file <span class="op">=</span> <span class="cn">NULL</span>, responses <span class="op">=</span> <span class="cn">TRUE</span>, analysis <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -76,7 +76,11 @@
 
 
 <dt id="arg-responses">responses<a class="anchor" aria-label="anchor" href="#arg-responses"></a></dt>
-<dd><p>A dataframe from the output of get_inr and the 'responses' dataframe from the list output. Default is NULL.</p></dd>
+<dd><p>A logical to determine if responses should be added to the graph visualization. Default is TRUE.</p></dd>
+
+
+<dt id="arg-analysis">analysis<a class="anchor" aria-label="anchor" href="#arg-analysis"></a></dt>
+<dd><p>A <code>dataframe</code> object containing the analytic dataframe to use for generating the responses. This should be the dataframe after recoding takes place using <code><a href="recode_var.html">recode_var()</a></code>. Default is NULL.</p></dd>
 
 </dl></div>
     <div id="value">
