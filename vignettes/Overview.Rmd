@@ -47,7 +47,7 @@ The survey data can be loaded with `read.csv("ug_publicuse_5421.csv")`. Loading 
 ## Loading data
 
 ```{r load_data, echo=FALSE}
-rw_publicuse_4483 <- read.csv("C:/Users/qno4/Downloads/rw_publicuse_4483.csv")
+rw_publicuse_4483 <- read.csv("rw_publicuse_4483.csv")
 ```
 
 ```{r, eval=FALSE}
@@ -63,7 +63,7 @@ DT::datatable((rw_publicuse_4483), options = list(scrollX = TRUE))
 The codebook contains each variable (`grp`) and the potential response labels (`values`) and the responses coded in the data (`options`).
 
 ```{r import_codebook, echo=FALSE}
-codebook <- get_codebook(path = "C:/Users/qno4/Downloads/manifest.json")
+codebook <- get_codebook(path = "manifest.json")
 ```
 
 ```{r import_codebook2, eval=FALSE}
@@ -79,7 +79,7 @@ DT::datatable(codebook, options = list(scrollX = TRUE))
 The descriptions contains a detailed description (`desc`) for each variable (`var`).
 
 ```{r import_desc, echo=FALSE}
-descriptions <- get_descriptions(path = "C:/Users/qno4/Downloads/manifest.json")
+descriptions <- get_descriptions(path = "manifest.json")
 ```
 
 ```{r import_desc2, eval=FALSE}
@@ -95,7 +95,7 @@ DT::datatable(descriptions, options = list(scrollX = TRUE))
 A data frame containing the skip logic information, including variables, question IDs, question text, response values, and skip logic conditions.
 
 ```{r import_skip_real, echo=FALSE}
-skip <- get_skiplogic(path = "C:/Users/qno4/Downloads/manifest.json")
+skip <- get_skiplogic(path = "manifest.json")
 ```
 
 ```{r import_skip, eval=FALSE}
@@ -131,7 +131,7 @@ rw_label_skip <- apply_skiplogic(path = "manifest.json", x = rw_label)
 ```
 
 ```{r skip_real, echo=FALSE}
-rw_label_skip <- apply_skiplogic(path = "C:/Users/qno4/Downloads/manifest.json", x = rw_label)
+rw_label_skip <- apply_skiplogic(path = "manifest.json", x = rw_label)
 ```
 
 ```{r label_skip_output}
