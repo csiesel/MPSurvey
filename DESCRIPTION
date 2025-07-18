@@ -15,7 +15,8 @@ Imports:
     epikit,
     gtsummary,
     matchmaker,
-    DiagrammeR
+    DiagrammeR,
+    srvyr
 Depends: 
     dplyr
 Suggests: 
