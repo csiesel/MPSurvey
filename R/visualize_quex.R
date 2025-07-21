@@ -71,6 +71,7 @@ visualize_quex <- function(path=NULL, file=NULL, responses=TRUE, analysis=NULL){
       mutate(from = node_df$id[which(node_df$label==from)],
              to = node_df$id[which(node_df$label==to)]) %>%
       mutate(rel = ifelse(rel %in% c("Don't know", "Don't Know"), "Dont know", rel)) %>%
+      mutate(rel = gsub("Don't know", "Dont know", rel)) %>%
       mutate(label = rel)
   } else{
     if(is.null(analysis)){
@@ -86,6 +87,7 @@ visualize_quex <- function(path=NULL, file=NULL, responses=TRUE, analysis=NULL){
         mutate(from = node_df$id[which(node_df$label==from)],
                to = node_df$id[which(node_df$label==to)]) %>%
         mutate(rel = ifelse(rel %in% c("Don't know", "Don't Know"), "Dont know", rel)) %>%
+        mutate(rel = gsub("Don't know", "Dont know", rel)) %>%
         mutate(label = paste0(rel, "\n", n))
 
     }
