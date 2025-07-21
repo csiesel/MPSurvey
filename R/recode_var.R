@@ -44,6 +44,9 @@ recode_var <- function(x, vars, new_var){
   }
 
 
+  updated_df <- updated_df |>
+    mutate(across(everything(), ~na_if(., "")))
+
 
   return(updated_df)
 }
