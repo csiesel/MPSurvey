@@ -16,7 +16,8 @@ Imports:
     gtsummary,
     matchmaker,
     DiagrammeR,
-    srvyr
+    srvyr,
+    magrittr
 Depends: 
     dplyr
 Suggests: 
