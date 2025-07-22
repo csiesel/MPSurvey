@@ -143,7 +143,8 @@ get_skiplogic <- function(path = NULL){
     select(-c(id, responses.skip_logic)) |>
     mutate(responses.response=ifelse(responses.response=="NULL" & var!="age",
                                      responses.responses.refusal,
-                                     responses.response))
+                                     responses.response)) |>
+    mutate(responses.value = gsub("^[0-9]+(?=[a-zA-Z])", "", responses.value, perl = TRUE))
 
   return(codes)
 

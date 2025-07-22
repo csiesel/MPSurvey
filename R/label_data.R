@@ -32,6 +32,12 @@
 label_data <- function(x=NULL, codebook=NULL){
 
   ldf <- matchmaker::match_df(x, codebook, from = "options", to = "values", by = "grp")
+
+  # Removing numbers before characters
+  ldf <- ldf %>%
+    mutate(across(everything(), ~ gsub("^[0-9]+(?=[a-zA-Z])", "", ., perl = TRUE)))
+
+
   return(ldf)
 
 }

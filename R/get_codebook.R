@@ -48,5 +48,9 @@ get_codebook <- function(path = NULL){
                   options="responses",
                   grp="var") |>
     dplyr::select(grp, values, options)
+
+  codes <- codes |>
+    mutate(values = gsub("^[0-9]+(?=[a-zA-Z])", "", values, perl = TRUE))
+
   return(codes)
 }
