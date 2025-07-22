@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   Overview: Overview.html
-last_built: 2025-07-22T11:24Z
+last_built: 2025-07-22T17:27Z
 urls:
   reference: https://csiesel.github.io/MPSurvey/reference
   article: https://csiesel.github.io/MPSurvey/articles
