@@ -94,10 +94,10 @@
 <div class="section level2">
 <h2 id="walkthrough-overview">Walkthrough Overview<a class="anchor" aria-label="anchor" href="#walkthrough-overview"></a>
 </h2>
-<p>This walkthrough guides you through the analysis process for the 2022
-noncommunicable disease mobile phone survey conducted in Rwanda. The
-data for the analysis and the questionnaire metadata can be accessed at
-the following links and saved on your computer:</p>
+<p>This walkthrough guides you through the analysis process for a 2022
+mobile phone survey conducted in Rwanda. The data for the analysis and
+the questionnaire metadata can be accessed at the following links and
+saved on your computer:</p>
 <ul>
 <li><p><a href="https://drive.google.com/file/d/1wkPiUvF5LtVxuC3boZbMBBHJP5wBnuZz/view?usp=sharing" title="Weighted Rwanda NCD survey data" class="external-link">Survey data</a></p></li>
 <li><p><a href="https://drive.google.com/file/d/145A-UgVT7Cc9RrJQuDmsmCdAcisWcFgw/view?usp=sharing" title="Questionnaire and logic file in JSON format" class="external-link">Questionnaire JSON
@@ -329,7 +329,7 @@ from <code>smoke1</code>. To do this, we can use the
 <code class="sourceCode R"><span><span class="va">rw_analysis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/recode_var.html">recode_var</a></span><span class="op">(</span><span class="va">rw_label_skip</span>, vars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"smoke1"</span>, <span class="st">"smoke1_ever"</span><span class="op">)</span>,new_var <span class="op">=</span> <span class="va">smoke1_ever_pop</span><span class="op">)</span> </span></code></pre></div>
 <p>Running this function will generate a popup window like the image
 below. This is where you can copy over the correct values for the new
-variable called <code>alcohol2_pop</code>.</p>
+variable called <code>smoke1_ever_pop</code>.</p>
 <p><img src="images/clipboard-2867037870.png"></p>
 <p>Applying the logic above, the completed table should look like the
 table below. Once complete, select ‘done’ at the top right and the
