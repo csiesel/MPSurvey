@@ -28,7 +28,7 @@ library(MPSurvey)
 
 # Walkthrough Overview
 
-This walkthrough guides you through the analysis process for the 2022 noncommunicable disease mobile phone survey conducted in Rwanda. The data for the analysis and the questionnaire metadata can be accessed at the following links and saved on your computer:
+This walkthrough guides you through the analysis process for a 2022 mobile phone survey conducted in Rwanda. The data for the analysis and the questionnaire metadata can be accessed at the following links and saved on your computer:
 
 -   [Survey data](https://drive.google.com/file/d/1wkPiUvF5LtVxuC3boZbMBBHJP5wBnuZz/view?usp=sharing "Weighted Rwanda NCD survey data")
 
@@ -162,7 +162,7 @@ rw_analysis <- rw_label_skip %>%
                                      TRUE ~ "ASDF"))
 ```
 
-Running this function will generate a popup window like the image below. This is where you can copy over the correct values for the new variable called `alcohol2_pop`.
+Running this function will generate a popup window like the image below. This is where you can copy over the correct values for the new variable called `smoke1_ever_pop`.
 
 ![](images/clipboard-2867037870.png)
 
