@@ -30,7 +30,8 @@ recode_var <- function(x, vars, new_var){
 
   vars2 <- paste0(vars, "_original")
   updated_df <- x |>
-    merge(grouped_df, by.x = vars, by.y=vars2)
+    merge(grouped_df, by.x = vars, by.y=vars2) |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), ~as.character(.)))
 
   dup_vars <- names(updated_df[grepl("\\.y", names(updated_df))])
 
