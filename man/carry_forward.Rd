@@ -31,7 +31,7 @@ forward into \code{new_var}.}
 \item{keep_resp}{A vector of responses in \code{child_var} that should be kept
 and not overwritten.}
 
-\item{verbose}{}
+\item{verbose}{Logical. If \code{TRUE}, prints a summary of changes}
 }
 \value{
 The input data frame with a new variable added.
@@ -42,7 +42,7 @@ variable into a new variable, while preserving specified responses from an
 original variable.
 }
 \examples{
-#' \dontrun{
+\dontrun{
 df <- data.frame(
   q1 = c("Yes", "No", "DK", "Yes", NA),
   q2 = c(NA, "Refused", "No", "Maybe", "Yes")
