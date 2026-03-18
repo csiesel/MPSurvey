@@ -12,7 +12,9 @@ reference:
 - contents:
   - label_data
   - apply_skiplogic
+  - carry_forward
   - recode_var
+  - recode_var_app
   - set_descriptions
 - title: Analyzing data
 - contents:

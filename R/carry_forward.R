@@ -14,6 +14,7 @@
 #'   forward into `new_var`.
 #' @param keep_resp A vector of responses in `child_var` that should be kept
 #'   and not overwritten.
+#' @param verbose
 #'
 #' @return The input data frame with a new variable added.
 #' @export

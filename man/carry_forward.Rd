@@ -30,6 +30,8 @@ forward into \code{new_var}.}
 
 \item{keep_resp}{A vector of responses in \code{child_var} that should be kept
 and not overwritten.}
+
+\item{verbose}{}
 }
 \value{
 The input data frame with a new variable added.
@@ -40,6 +42,7 @@ variable into a new variable, while preserving specified responses from an
 original variable.
 }
 \examples{
+#' \dontrun{
 df <- data.frame(
   q1 = c("Yes", "No", "DK", "Yes", NA),
   q2 = c(NA, "Refused", "No", "Maybe", "Yes")
@@ -53,4 +56,5 @@ carry_forward(
   orig_resp = c("Yes", "No"),
   keep_resp = c("Refused", "Maybe")
 )
+}
 }
