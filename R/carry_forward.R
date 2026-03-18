@@ -14,12 +14,13 @@
 #'   forward into `new_var`.
 #' @param keep_resp A vector of responses in `child_var` that should be kept
 #'   and not overwritten.
-#' @param verbose
+#' @param verbose Logical. If `TRUE`, prints a summary of changes
 #'
 #' @return The input data frame with a new variable added.
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' df <- data.frame(
 #'   q1 = c("Yes", "No", "DK", "Yes", NA),
 #'   q2 = c(NA, "Refused", "No", "Maybe", "Yes")
@@ -33,6 +34,7 @@
 #'   orig_resp = c("Yes", "No"),
 #'   keep_resp = c("Refused", "Maybe")
 #' )
+#' }
 carry_forward <- function(x, parent_var, child_var, new_var,
                           orig_resp, keep_resp,
                           verbose = TRUE) {
