@@ -8,6 +8,7 @@
 <url><loc>https://csiesel.github.io/MPSurvey/reference/analyze_survey.html</loc></url>
 <url><loc>https://csiesel.github.io/MPSurvey/reference/analyze_survey2.html</loc></url>
 <url><loc>https://csiesel.github.io/MPSurvey/reference/apply_skiplogic.html</loc></url>
+<url><loc>https://csiesel.github.io/MPSurvey/reference/carry_forward.html</loc></url>
 <url><loc>https://csiesel.github.io/MPSurvey/reference/export_results.html</loc></url>
 <url><loc>https://csiesel.github.io/MPSurvey/reference/export_results2.html</loc></url>
 <url><loc>https://csiesel.github.io/MPSurvey/reference/get_codebook.html</loc></url>
@@ -19,6 +20,9 @@
 <url><loc>https://csiesel.github.io/MPSurvey/reference/mps_design.html</loc></url>
 <url><loc>https://csiesel.github.io/MPSurvey/reference/pipe.html</loc></url>
 <url><loc>https://csiesel.github.io/MPSurvey/reference/recode_var.html</loc></url>
+<url><loc>https://csiesel.github.io/MPSurvey/reference/recode_var_app.html</loc></url>
+<url><loc>https://csiesel.github.io/MPSurvey/reference/recode_var_app_server.html</loc></url>
+<url><loc>https://csiesel.github.io/MPSurvey/reference/recode_var_app_ui.html</loc></url>
 <url><loc>https://csiesel.github.io/MPSurvey/reference/set_descriptions.html</loc></url>
 <url><loc>https://csiesel.github.io/MPSurvey/reference/survey_variables.html</loc></url>
 <url><loc>https://csiesel.github.io/MPSurvey/reference/visualize_quex.html</loc></url>
