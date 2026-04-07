@@ -9,6 +9,11 @@
 #' @param x A data frame or tibble containing the survey data. Default is NULL.
 #' @param CATI Logical. Defaults to FALSE. If TRUE, use CATI-compatible skip
 #'   logic parsing while preserving the legacy output behavior.
+#' @param protected_vars Character vector of variable names that should be
+#'   protected from the generic CATI skip-logic pass and from the final CATI
+#'   `relevant` overwrite pass. This is useful for section-entry or main-path
+#'   gateway questions that should generally remain asked for completed
+#'   respondents. Default is `c("bp_measured", "diabetes_measured")`.
 #'
 #' @return A modified data frame with skip logic applied.
 #' @export
@@ -16,9 +21,22 @@
 #' @examples
 #' \dontrun{
 #' modified_data <- apply_skiplogic(path = "path/to/your/skiplogic.json", x = your_survey_data)
-#' modified_data_cati <- apply_skiplogic(path = "path/to/your/cati_manifest.json", x = your_survey_data, CATI = TRUE)
+#' modified_data_cati <- apply_skiplogic(
+#'   path = "path/to/your/cati_manifest.json",
+#'   x = your_survey_data,
+#'   CATI = TRUE
+#' )
+#' modified_data_cati2 <- apply_skiplogic(
+#'   path = "path/to/your/cati_manifest.json",
+#'   x = your_survey_data,
+#'   CATI = TRUE,
+#'   protected_vars = c("bp_measured", "diabetes_measured")
+#' )
 #' }
-apply_skiplogic <- function(path = NULL, x = NULL, CATI = FALSE){
+apply_skiplogic <- function(path = NULL,
+                            x = NULL,
+                            CATI = FALSE,
+                            protected_vars = c("bp_measured", "diabetes_measured")){
 
   if (!CATI) {
     skips <- get_skiplogic(path = path)
@@ -121,7 +139,7 @@ apply_skiplogic <- function(path = NULL, x = NULL, CATI = FALSE){
 
   skips <- get_skiplogic(path = path, CATI = TRUE)
 
-  # keep original values for CATI safeguard checks
+  # keep original values for CATI safeguard and relevant checks
   x_orig <- x
 
   skips <- skips |>
@@ -131,11 +149,22 @@ apply_skiplogic <- function(path = NULL, x = NULL, CATI = FALSE){
     return(x)
   }
 
+  # normalize protected vars
+  if (is.null(protected_vars)) {
+    protected_vars <- character(0)
+  } else {
+    protected_vars <- unique(as.character(protected_vars))
+    protected_vars <- protected_vars[!is.na(protected_vars) & protected_vars != ""]
+  }
+
   skip_vars <- unique(skips$skip)[
     !is.na(unique(skips$skip)) &
       unique(skips$skip) != "next question" &
       unique(skips$skip) %in% names(x)
   ]
+
+  # Do not apply generic skip-NA forcing to protected gateway questions
+  skip_vars <- setdiff(skip_vars, protected_vars)
 
   if (length(skip_vars) == 0) {
     return(x)
@@ -159,7 +188,6 @@ apply_skiplogic <- function(path = NULL, x = NULL, CATI = FALSE){
       high_num <- .to_num(high_chr)
       value_up <- ifelse(is.na(value_chr), NA_character_, toupper(trimws(as.character(value_chr))))
 
-      # explicit refusal-like rule
       if (!is.na(value_up) && value_up %in% c("REFUSED", "REFUSAL")) {
         if ((!is.na(low_num) && !is.na(pv_num) && pv_num == low_num) ||
             as.character(parent_value) == as.character(low_chr)) {
@@ -167,7 +195,6 @@ apply_skiplogic <- function(path = NULL, x = NULL, CATI = FALSE){
         }
       }
 
-      # normal numeric range rule
       if (!is.na(low_num) && !is.na(high_num) && !is.na(pv_num)) {
         if (pv_num >= low_num && pv_num <= high_num) {
           return(TRUE)
@@ -197,6 +224,39 @@ apply_skiplogic <- function(path = NULL, x = NULL, CATI = FALSE){
     !(length(v) == 0 || is.na(v) || v == "" || v == "NOT APPLICABLE")
   }
 
+  .eval_relevant_rule <- function(rule, data_df) {
+    rule <- as.character(rule)[1]
+    rule_clean <- tolower(trimws(rule))
+
+    if (is.na(rule) || rule_clean %in% c("", "true", "t", "1")) {
+      return(rep(TRUE, nrow(data_df)))
+    }
+    if (rule_clean %in% c("false", "f", "0")) {
+      return(rep(FALSE, nrow(data_df)))
+    }
+
+    # CATI relevant parser currently supports simple equality rules only,
+    # e.g. "phc1 == YES"
+    m <- stringr::str_match(rule, "^\\s*([A-Za-z0-9_]+)\\s*==\\s*(.+?)\\s*$")
+
+    if (is.na(m[1, 1])) {
+      return(rep(TRUE, nrow(data_df)))
+    }
+
+    lhs <- m[1, 2]
+    rhs <- trimws(m[1, 3])
+    rhs <- gsub("^['\"]|['\"]$", "", rhs)
+
+    if (!(lhs %in% names(data_df))) {
+      return(rep(TRUE, nrow(data_df)))
+    }
+
+    lhs_vals <- toupper(trimws(as.character(data_df[[lhs]])))
+    rhs_vals <- toupper(trimws(rhs))
+
+    lhs_vals == rhs_vals
+  }
+
   for (i in skip_vars) {
     cat(paste0("\n\n***** Skip Logic Variable: ", i, " *****\n"))
 
@@ -210,7 +270,6 @@ apply_skiplogic <- function(path = NULL, x = NULL, CATI = FALSE){
       next
     }
 
-    # Multiple parent variables: keep value if any parent routes here
     if (length(parent_vars) > 1) {
 
       allowed <- rep(FALSE, nrow(x))
@@ -244,7 +303,6 @@ apply_skiplogic <- function(path = NULL, x = NULL, CATI = FALSE){
       next
     }
 
-    # Single parent variable
     q <- parent_vars[1]
     cat(paste0("Parent variable: ", q, "\n"))
 
@@ -296,6 +354,40 @@ apply_skiplogic <- function(path = NULL, x = NULL, CATI = FALSE){
 
       parent_na <- is.na(x[[q]]) | x[[q]] == "" | x[[q]] == "NOT APPLICABLE"
       x[[i]] <- ifelse(parent_na | !allow, "NOT APPLICABLE", x[[i]])
+    }
+  }
+
+  # apply only genuinely conditional `relevant` rules after skip logic
+  relevant_df <- skips |>
+    dplyr::filter(
+      !is.na(relevant),
+      relevant != "",
+      !tolower(trimws(relevant)) %in% c("true", "t", "1")
+    ) |>
+    dplyr::distinct(var, relevant) |>
+    dplyr::filter(!var %in% protected_vars)
+
+  if (nrow(relevant_df) > 0) {
+    for (j in seq_len(nrow(relevant_df))) {
+      target_var <- relevant_df$var[j]
+      rule <- relevant_df$relevant[j]
+
+      if (!(target_var %in% names(x))) next
+      if (!(target_var %in% names(x_orig))) next
+
+      keep_idx <- .eval_relevant_rule(rule, x_orig)
+
+      x[[target_var]] <- ifelse(
+        keep_idx,
+        as.character(x_orig[[target_var]]),
+        "NOT APPLICABLE"
+      )
+
+      x[[target_var]] <- ifelse(
+        is.na(x_orig[[target_var]]) | x_orig[[target_var]] == "",
+        ifelse(keep_idx, NA_character_, "NOT APPLICABLE"),
+        x[[target_var]]
+      )
     }
   }
 

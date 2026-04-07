@@ -162,7 +162,7 @@ get_skiplogic <- function(path = NULL, CATI = FALSE){
       var = character(),
       quex = character(),
       type = character(),
-      relevant = logical(),
+      relevant = character(),
       responses.value = character(),
       responses.responses.refusal = character(),
       responses.from = character(),
@@ -178,9 +178,10 @@ get_skiplogic <- function(path = NULL, CATI = FALSE){
     as.character(x[[1]])
   }
 
-  .safe_lgl <- function(x) {
-    if (is.null(x) || length(x) == 0) return(NA)
-    as.logical(x[[1]])
+  .safe_relevant <- function(x) {
+    if (is.null(x) || length(x) == 0) return(NA_character_)
+    if (is.logical(x) && length(x) == 1) return(as.character(x))
+    as.character(x[[1]])
   }
 
   .prompt_text <- function(step) {
@@ -212,11 +213,7 @@ get_skiplogic <- function(path = NULL, CATI = FALSE){
     as.character(code)
   }
 
-  # Collect analytic steps across sections
-  # all steps with id/store so skip targets can resolve to explanation/preamble/end steps too
   all_steps <- list()
-
-  # analytic steps only for output rows
   steps_out <- list()
 
   for (section in raw$steps) {
@@ -230,7 +227,7 @@ get_skiplogic <- function(path = NULL, CATI = FALSE){
         id = .safe_chr(step$id),
         type = .safe_chr(step$type),
         quex = .prompt_text(step),
-        relevant = .safe_lgl(step$relevant),
+        relevant = .safe_relevant(step$relevant),
         refusal_skip = .safe_chr(step$refusal$skip_logic),
         raw = step
       )
@@ -241,7 +238,7 @@ get_skiplogic <- function(path = NULL, CATI = FALSE){
           id = .safe_chr(step$id),
           type = .safe_chr(step$type),
           quex = .prompt_text(step),
-          relevant = .safe_lgl(step$relevant),
+          relevant = .safe_relevant(step$relevant),
           refusal_skip = .safe_chr(step$refusal$skip_logic),
           raw = step
         )
@@ -287,7 +284,6 @@ get_skiplogic <- function(path = NULL, CATI = FALSE){
     step_relevant <- s$relevant
     step_refusal <- s$refusal_skip
 
-    # multiple-choice handling
     if (identical(step_type, "multiple-choice")) {
       if (!is.null(step$choices) && length(step$choices) > 0) {
         for (choice in step$choices) {
@@ -313,7 +309,6 @@ get_skiplogic <- function(path = NULL, CATI = FALSE){
       }
     }
 
-    # numeric handling
     if (identical(step_type, "numeric")) {
       numeric_rows <- list()
 
@@ -337,14 +332,8 @@ get_skiplogic <- function(path = NULL, CATI = FALSE){
       }
 
       if (length(numeric_rows) > 0) {
-        numeric_df <- dplyr::bind_rows(numeric_rows)
-
-        # deduplicate repeated rows from CATI manifests
-        numeric_df <- numeric_df |>
-          dplyr::distinct()
-
-        # ✅ REMOVE INVALID NUMERIC RANGES (e.g., 100 -> 99)
-        numeric_df <- numeric_df |>
+        numeric_df <- dplyr::bind_rows(numeric_rows) |>
+          dplyr::distinct() |>
           dplyr::filter(
             is.na(responses.from) | is.na(responses.to) |
               !grepl("^[0-9]+$", responses.from) |
@@ -352,16 +341,12 @@ get_skiplogic <- function(path = NULL, CATI = FALSE){
               as.numeric(responses.from) <= as.numeric(responses.to)
           )
 
-        # age in the latest CATI manifest uses 999 refusal, while repeated 99
-        # refusal rows appear to be noise
         if (identical(step_var, "age") && any(numeric_df$responses.from == "999")) {
           numeric_df <- numeric_df |>
             dplyr::filter(!(responses.from == "99" &
                               toupper(trimws(ifelse(is.na(responses.value), "", responses.value))) %in% c("REFUSED", "")))
         }
 
-        # append synthetic refusal row only if there is a refusal skip target and
-        # there is no explicit refusal range already present
         explicit_refusal_present <- FALSE
         if (nrow(numeric_df) > 0) {
           explicit_refusal_present <- any(
