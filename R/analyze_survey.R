@@ -13,6 +13,15 @@
 #' @return A `gtsummary` object containing the summary table of the analyzed
 #'   survey data.
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' summary_table <- analyze_survey(
+#'   mps = your_survey_design,
+#'   vars = c("var1", "var2", "var3"),
+#'   numeric_vars = c("var2")
+#' )
+#' }
 analyze_survey <- function(mps, vars, numeric_vars = NULL){
 
   mps$variables <- mps$variables %>%
@@ -38,7 +47,21 @@ analyze_survey <- function(mps, vars, numeric_vars = NULL){
       dplyr::mutate(
         dplyr::across(
           dplyr::all_of(numeric_vars),
-          ~ suppressWarnings(as.numeric(as.character(.)))
+          ~ {
+            x <- as.character(.)
+            x <- trimws(x)
+            x[toupper(x) %in% c(
+              "NOT APPLICABLE",
+              "REFUSED",
+              "REFUSED/ DON'T KNOW",
+              "REFUSED/DON'T KNOW",
+              "DON'T KNOW",
+              "DONT KNOW",
+              "NA",
+              ""
+            )] <- NA_character_
+            suppressWarnings(as.numeric(x))
+          }
         )
       )
   }
@@ -57,7 +80,8 @@ analyze_survey <- function(mps, vars, numeric_vars = NULL){
       dplyr::select(dplyr::all_of(c(vars, names(mps$strata)))) %>%
       gtsummary::tbl_svysummary(
         by = sex,
-        digits = list(gtsummary::all_categorical() ~ c(0, 0, 1, 1, 1)),
+        digits = list(gtsummary::all_categorical() ~ c(0, 0, 1, 1, 1),
+                      gtsummary::all_continuous() ~ c(0, 0, 1, 1, 1)),
         type = type_list,
         missing = "no",
         statistic = list(

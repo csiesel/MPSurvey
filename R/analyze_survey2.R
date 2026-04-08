@@ -47,7 +47,21 @@ analyze_survey2 <- function(mps, vars, numeric_vars = NULL){
       dplyr::mutate(
         dplyr::across(
           dplyr::all_of(numeric_vars),
-          ~ suppressWarnings(as.numeric(as.character(.)))
+          ~ {
+            x <- as.character(.)
+            x <- trimws(x)
+            x[toupper(x) %in% c(
+              "NOT APPLICABLE",
+              "REFUSED",
+              "REFUSED/ DON'T KNOW",
+              "REFUSED/DON'T KNOW",
+              "DON'T KNOW",
+              "DONT KNOW",
+              "NA",
+              ""
+            )] <- NA_character_
+            suppressWarnings(as.numeric(x))
+          }
         )
       )
   }
