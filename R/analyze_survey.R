@@ -85,7 +85,7 @@ analyze_survey <- function(mps, vars, numeric_vars = NULL){
         type = type_list,
         missing = "no",
         statistic = list(
-          gtsummary::all_continuous() ~ "{N_nonmiss_unweighted}/{N_nonmiss_unweighted}\n{mean} ({sd})",
+          gtsummary::all_continuous() ~ "{N_nonmiss_unweighted}\n{mean} ({sd})",
           gtsummary::all_categorical() ~ "{n_unweighted}/{N_unweighted}\n{p}%"
         )
       ) %>%
@@ -115,7 +115,7 @@ analyze_survey <- function(mps, vars, numeric_vars = NULL){
         type = type_list,
         missing = "no",
         statistic = list(
-          gtsummary::all_continuous() ~ "{N_nonmiss_unweighted}/{N_nonmiss_unweighted}\n{mean} ({sd})",
+          gtsummary::all_continuous() ~ "{N_nonmiss_unweighted}\n{mean} ({sd})",
           gtsummary::all_categorical() ~ "{n_unweighted}/{N_unweighted}\n{p}%"
         )
       ) %>%
