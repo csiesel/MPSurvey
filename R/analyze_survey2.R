@@ -81,7 +81,7 @@ analyze_survey2 <- function(mps, vars, numeric_vars = NULL){
   )
 
   statistic_list <- list(
-    gtsummary::all_continuous() ~ "{N_nonmiss_unweighted}/{N_obs_unweighted}\n{mean} ({sd})",
+    gtsummary::all_continuous() ~ "{N_nonmiss_unweighted}/{N_nonmiss_unweighted}\n{mean} ({sd})",
     gtsummary::all_categorical() ~ "{n_unweighted}/{N_unweighted}\n{p}%"
   )
 
