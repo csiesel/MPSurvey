@@ -9,20 +9,18 @@
 #' @param numeric_vars An optional character vector of variable names from `vars`
 #'   that should be interpreted as continuous/numeric in `tbl_svysummary()`.
 #'   Default is NULL.
+#' @param numeric_exclude_values Numeric values that should be treated as missing
+#'   for variables listed in `numeric_vars`. These are commonly refusal or
+#'   don't-know codes such as 88, 99, or 999. Default is
+#'   `c(88, 98, 99, 888, 998, 999)`.
 #'
 #' @return A `gtsummary` object containing the summary table of the analyzed
 #'   survey data.
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' summary_table <- analyze_survey(
-#'   mps = your_survey_design,
-#'   vars = c("var1", "var2", "var3"),
-#'   numeric_vars = c("var2")
-#' )
-#' }
-analyze_survey <- function(mps, vars, numeric_vars = NULL){
+analyze_survey <- function(mps,
+                           vars,
+                           numeric_vars = NULL,
+                           numeric_exclude_values = c(88, 98, 99, 888, 998, 999)) {
 
   mps$variables <- mps$variables %>%
     dplyr::mutate(
@@ -50,6 +48,7 @@ analyze_survey <- function(mps, vars, numeric_vars = NULL){
           ~ {
             x <- as.character(.)
             x <- trimws(x)
+
             x[toupper(x) %in% c(
               "NOT APPLICABLE",
               "REFUSED",
@@ -60,7 +59,10 @@ analyze_survey <- function(mps, vars, numeric_vars = NULL){
               "NA",
               ""
             )] <- NA_character_
-            suppressWarnings(as.numeric(x))
+
+            x_num <- suppressWarnings(as.numeric(x))
+            x_num[x_num %in% numeric_exclude_values] <- NA_real_
+            x_num
           }
         )
       )
@@ -75,7 +77,7 @@ analyze_survey <- function(mps, vars, numeric_vars = NULL){
     type_list <- as.list(type_list)
   }
 
-  if("sex" %in% names(mps$variables)){
+  if ("sex" %in% names(mps$variables)) {
     gtsummary_indicators <- mps %>%
       dplyr::select(dplyr::all_of(c(vars, names(mps$strata)))) %>%
       gtsummary::tbl_svysummary(
@@ -105,8 +107,7 @@ analyze_survey <- function(mps, vars, numeric_vars = NULL){
         stat_2 = "**Male**",
         ci_stat_2 = "**95% CI**"
       )
-
-  } else if("gender" %in% names(mps$variables)){
+  } else if ("gender" %in% names(mps$variables)) {
     gtsummary_indicators <- mps %>%
       dplyr::select(dplyr::all_of(c(vars, names(mps$strata)))) %>%
       gtsummary::tbl_svysummary(
@@ -136,7 +137,6 @@ analyze_survey <- function(mps, vars, numeric_vars = NULL){
         stat_2 = "**Male**",
         ci_stat_2 = "**95% CI**"
       )
-
   } else {
     stop("Neither 'sex' nor 'gender' was found in mps$variables.")
   }

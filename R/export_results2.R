@@ -11,11 +11,6 @@
 #'
 #' @return None. The function writes the processed data to an Excel file.
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' export_results2(results = your_survey_results, file = "path/to/export/file.xlsx")
-#' }
 export_results2 <- function(results, file){
 
   clean_numeric_stat <- function(x) {
@@ -49,14 +44,9 @@ export_results2 <- function(results, file){
     df %>%
       dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
       dplyr::summarise(
-        n = dplyr::coalesce(
-          get_first_stat(stat, stat_name, c("n_unweighted", "n", "N_nonmiss_unweighted")),
-          NA_real_
-        ),
-        N = dplyr::coalesce(
-          get_first_stat(stat, stat_name, c("N_unweighted", "N", "N_obs_unweighted")),
-          NA_real_
-        ),
+        n_cat = get_first_stat(stat, stat_name, c("n_unweighted", "n")),
+        N_cat = get_first_stat(stat, stat_name, c("N_unweighted", "N")),
+        n_cont = get_first_stat(stat, stat_name, c("N_nonmiss_unweighted")),
         estimate = dplyr::coalesce(
           get_first_stat(stat, stat_name, c("estimate", "p", "mean")),
           NA_real_
@@ -64,10 +54,14 @@ export_results2 <- function(results, file){
         conf.low = get_first_stat(stat, stat_name, c("conf.low", "ci.low")),
         conf.high = get_first_stat(stat, stat_name, c("conf.high", "ci.high")),
         .groups = "drop"
-      )
+      ) %>%
+      dplyr::mutate(
+        n = dplyr::coalesce(n_cat, n_cont),
+        N = dplyr::coalesce(N_cat, n_cont)
+      ) %>%
+      dplyr::select(-n_cat, -N_cat, -n_cont)
   }
 
-  # Overall and sex/gender -------------------------------------------------
   temp <- results$tbls[[1]]
 
   overall_group_name <- unique(as.character(temp$cards$tbl_svysummary$group1))
@@ -103,7 +97,6 @@ export_results2 <- function(results, file){
     dplyr::select(-group1) %>%
     dplyr::rename(group = group1_level)
 
-  # Agecat -----------------------------------------------------------------
   temp2 <- results$tbls[[2]]
 
   agecat_sum <- temp2$cards$tbl_svysummary %>%
@@ -124,7 +117,6 @@ export_results2 <- function(results, file){
     dplyr::select(-group1) %>%
     dplyr::rename(agecat = group1_level)
 
-  # Sex/gender by agecat ---------------------------------------------------
   temp3 <- results$tbls[[3]]
   strata_tbls <- temp3$tbls
 
@@ -159,7 +151,6 @@ export_results2 <- function(results, file){
     dplyr::select(-group1) %>%
     dplyr::rename(agecat = group1_level)
 
-  # Optional relabel of generic strata names
   if (nrow(agecat_group_results) > 0 && all(grepl("^Stratum_", agecat_group_results$group))) {
     uniq <- unique(agecat_group_results$group)
     if (length(uniq) == 2) {

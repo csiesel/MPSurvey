@@ -30,28 +30,21 @@ export_results <- function(results, file) {
     is_cont <- !is.na(var_type) & grepl("continuous", var_type, ignore.case = TRUE)
     is_cat  <- !is.na(var_type) & grepl("categorical|dichotomous", var_type, ignore.case = TRUE)
 
-    # Continuous: supports both
-    # "n/N\nmean (sd)"
-    # "n/N mean (sd)"
     if (any(is_cont)) {
       x <- stat_col[is_cont]
 
-      out$n[is_cont] <- suppressWarnings(
-        as.numeric(sub("^\\s*([0-9.]+)\\s*/.*", "\\1", x))
+      cont_n <- suppressWarnings(
+        as.numeric(sub("^\\s*([0-9.]+).*", "\\1", x))
       )
 
-      out$N[is_cont] <- suppressWarnings(
-        as.numeric(sub("^.*?/\\s*([0-9.]+).*", "\\1", x))
-      )
+      out$n[is_cont] <- cont_n
+      out$N[is_cont] <- cont_n
 
       out$mean[is_cont] <- suppressWarnings(
         as.numeric(sub("^.*?[[:space:]\n]+([-0-9.]+)\\s*\\(.*$", "\\1", x))
       )
     }
 
-    # Categorical/dichotomous: supports both
-    # "n/N\np%"
-    # "n/N p%"
     if (any(is_cat)) {
       x <- stat_col[is_cat]
 
