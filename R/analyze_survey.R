@@ -81,7 +81,7 @@ analyze_survey <- function(mps, vars, numeric_vars = NULL){
       gtsummary::tbl_svysummary(
         by = sex,
         digits = list(gtsummary::all_categorical() ~ c(0, 0, 1, 1, 1),
-                      gtsummary::all_continuous() ~ c(0, 0, 1, 1, 1)),
+                      gtsummary::all_continuous() ~ c(0, 1, 1, 1, 1)),
         type = type_list,
         missing = "no",
         statistic = list(
@@ -111,7 +111,8 @@ analyze_survey <- function(mps, vars, numeric_vars = NULL){
       dplyr::select(dplyr::all_of(c(vars, names(mps$strata)))) %>%
       gtsummary::tbl_svysummary(
         by = gender,
-        digits = list(gtsummary::all_categorical() ~ c(0, 0, 1, 1, 1)),
+        digits = list(gtsummary::all_categorical() ~ c(0, 0, 1, 1, 1),
+                      gtsummary::all_continuous() ~ c(0, 1, 1, 1, 1)),
         type = type_list,
         missing = "no",
         statistic = list(

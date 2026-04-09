@@ -77,7 +77,7 @@ analyze_survey2 <- function(mps, vars, numeric_vars = NULL){
 
   digits_list <- list(
     gtsummary::all_categorical() ~ c(0, 0, 1, 1, 1),
-    gtsummary::all_continuous() ~ c(0, 0, 1, 1, 1)
+    gtsummary::all_continuous() ~ c(0, 1, 1, 1, 1)
   )
 
   statistic_list <- list(
