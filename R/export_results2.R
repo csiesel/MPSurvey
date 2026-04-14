@@ -1,130 +1,187 @@
 #' Export Results to Excel (v2)
 #'
-#' This function takes the results from a statistical analysis, processes the data to extract relevant statistics, and exports the processed data to an Excel file.
+#' This function takes the results from a statistical analysis, processes the
+#' card-level data from a `gtsummary` object, and exports the processed results
+#' to an Excel workbook with separate sheets for overall/sex, age category,
+#' and sex by age category results.
 #'
-#' @param results A list containing the results of a statistical analysis. The list should have a component named `table_body` which is a data frame containing the raw data.
-#' @param file A string specifying the path to the output Excel file.
+#' @param results A list containing the results of a statistical analysis,
+#'   typically returned by `analyze_survey2()`.
+#' @param file A character string specifying the path to the output Excel file.
 #'
 #' @return None. The function writes the processed data to an Excel file.
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Example usage:
-#' export_results2(results = your_survey_results, file = "path/to/export/file.xlsx")
-#' }
 export_results2 <- function(results, file){
-# Sex and Overall ---------------------------------------------------------
+
+  clean_numeric_stat <- function(x) {
+    x <- as.character(x)
+    x <- gsub("%", "", x)
+    x <- gsub("<0.001", "0.001", x, fixed = TRUE)
+    suppressWarnings(as.numeric(x))
+  }
+
+  get_first_stat <- function(stat_vec, stat_name_vec, targets) {
+    idx <- which(as.character(stat_name_vec) %in% targets)
+    if (length(idx) == 0) return(NA_real_)
+    clean_numeric_stat(stat_vec[idx[1]])
+  }
+
+  prep_card_df <- function(df) {
+    df %>%
+      dplyr::mutate(
+        dplyr::across(dplyr::everything(), as.character),
+        stat = as.character(stat),
+        stat_name = as.character(stat_name),
+        variable = as.character(variable),
+        variable_level = as.character(variable_level),
+        group1 = as.character(group1),
+        group1_level = as.character(group1_level)
+      ) %>%
+      dplyr::filter(is.na(stat) | stat != "logit")
+  }
+
+  summarise_export <- function(df, group_vars) {
+    df %>%
+      dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
+      dplyr::summarise(
+        n_cat = get_first_stat(stat, stat_name, c("n_unweighted", "n")),
+        N_cat = get_first_stat(stat, stat_name, c("N_unweighted", "N")),
+        n_cont = get_first_stat(stat, stat_name, c("N_nonmiss_unweighted")),
+        estimate = dplyr::coalesce(
+          get_first_stat(stat, stat_name, c("estimate", "p", "mean")),
+          NA_real_
+        ),
+        conf.low = get_first_stat(stat, stat_name, c("conf.low", "ci.low")),
+        conf.high = get_first_stat(stat, stat_name, c("conf.high", "ci.high")),
+        .groups = "drop"
+      ) %>%
+      dplyr::mutate(
+        n = dplyr::coalesce(n_cat, n_cont),
+        N = dplyr::coalesce(N_cat, n_cont)
+      ) %>%
+      dplyr::select(-n_cat, -N_cat, -n_cont)
+  }
+
   temp <- results$tbls[[1]]
 
-  a <- temp$cards$tbl_svysummary %>%
-    filter(!is.na(group1) & !is.null(group1_level) & variable_level!="NULL")
+  overall_group_name <- unique(as.character(temp$cards$tbl_svysummary$group1))
+  overall_group_name <- overall_group_name[!is.na(overall_group_name)]
+  overall_group_name <- if (length(overall_group_name) > 0) overall_group_name[1] else "group"
 
-  b <- temp$cards$add_overall %>%
-    mutate(group1="sex",
-           group1_level="Overall",
-           .before=1)  %>%
-    filter(!is.na(group1) & !is.null(group1_level) & variable_level!="NULL")
+  sex_sum <- temp$cards$tbl_svysummary %>%
+    dplyr::filter(!is.na(group1), !is.na(group1_level))
 
-  c <- temp$cards$add_ci %>%
-    mutate(group1="sex",
-           group1_level = ifelse(group1_level=="NULL", "Overall", group1_level))
+  sex_overall <- temp$cards$add_overall %>%
+    dplyr::mutate(
+      group1 = overall_group_name,
+      group1_level = "Overall",
+      .before = 1
+    )
 
+  sex_ci <- temp$cards$add_ci %>%
+    dplyr::mutate(
+      group1 = overall_group_name,
+      group1_level = ifelse(group1_level == "NULL" | is.na(group1_level), "Overall", group1_level)
+    )
 
-# Agecat ------------------------------------------------------------------
+  overall_sex_df <- dplyr::bind_rows(
+    prep_card_df(sex_sum),
+    prep_card_df(sex_overall),
+    prep_card_df(sex_ci)
+  )
+
+  overall_sex_results <- summarise_export(
+    overall_sex_df,
+    group_vars = c("group1", "group1_level", "variable", "variable_level")
+  ) %>%
+    dplyr::select(-group1) %>%
+    dplyr::rename(group = group1_level)
+
   temp2 <- results$tbls[[2]]
 
-  a2 <- temp2$cards$tbl_svysummary %>%
-    filter(!is.na(group1) & !is.null(group1_level) & variable_level!="NULL")
+  agecat_sum <- temp2$cards$tbl_svysummary %>%
+    dplyr::filter(!is.na(group1), !is.na(group1_level))
 
-  c2 <- temp2$cards$add_ci
+  agecat_ci <- temp2$cards$add_ci %>%
+    dplyr::filter(!is.na(group1), !is.na(group1_level))
 
+  agecat_df <- dplyr::bind_rows(
+    prep_card_df(agecat_sum),
+    prep_card_df(agecat_ci)
+  )
 
-# Sex and Agecat ----------------------------------------------------------
-  temp3f_sum <- results$tbls[[3]]$tbls[[1]]$cards$tbl_svysummary %>%
-    mutate(sex="Female",
-           .before=1) %>%
-    filter(!is.na(group1) & !is.null(group1_level) & variable_level!="NULL")
-  temp3f_ci <- results$tbls[[3]]$tbls[[1]]$cards$add_ci %>%
-    mutate(sex="Female",
-           .before=1) %>%
-    filter(!is.na(group1) & !is.null(group1_level) & variable_level!="NULL")
+  agecat_results <- summarise_export(
+    agecat_df,
+    group_vars = c("group1", "group1_level", "variable", "variable_level")
+  ) %>%
+    dplyr::select(-group1) %>%
+    dplyr::rename(agecat = group1_level)
 
-  temp3m_sum <- results$tbls[[3]]$tbls[[2]]$cards$tbl_svysummary %>%
-    mutate(sex="Male",
-           .before=1) %>%
-    filter(!is.na(group1) & !is.null(group1_level) & variable_level!="NULL")
-  temp3m_ci <- results$tbls[[3]]$tbls[[2]]$cards$add_ci %>%
-    mutate(sex="Male",
-           .before=1) %>%
-    filter(!is.na(group1) & !is.null(group1_level) & variable_level!="NULL")
+  temp3 <- results$tbls[[3]]
+  strata_tbls <- temp3$tbls
 
+  strata_results <- lapply(seq_along(strata_tbls), function(i) {
+    this_tbl <- strata_tbls[[i]]
 
+    stratum_label <- names(strata_tbls)[i]
+    if (is.null(stratum_label) || identical(stratum_label, "")) {
+      stratum_label <- paste0("Stratum_", i)
+    }
 
+    this_sum <- this_tbl$cards$tbl_svysummary %>%
+      dplyr::mutate(group = stratum_label, .before = 1) %>%
+      dplyr::filter(!is.na(group1), !is.na(group1_level))
 
+    this_ci <- this_tbl$cards$add_ci %>%
+      dplyr::mutate(group = stratum_label, .before = 1) %>%
+      dplyr::filter(!is.na(group1), !is.na(group1_level))
 
-# Combining! --------------------------------------------------------------
+    this_df <- dplyr::bind_rows(
+      prep_card_df(this_sum),
+      prep_card_df(this_ci)
+    )
 
-  overall_sex_df <- dplyr::bind_rows(a %>% mutate(across(everything(), as.character)) %>% filter(stat!="logit"),
-                                b %>% mutate(across(everything(), as.character)) %>% filter(stat!="logit"),
-                                c %>% mutate(across(everything(), as.character)) %>% filter(stat!="logit")) %>%
-    readr::type_convert()
+    summarise_export(
+      this_df,
+      group_vars = c("group", "group1", "group1_level", "variable", "variable_level")
+    )
+  })
 
-  agecat_df <- dplyr::bind_rows(a2 %>% mutate(across(everything(), as.character)) %>% filter(stat!="logit"),
-                                     c2 %>% mutate(across(everything(), as.character)) %>% filter(stat!="logit")) %>%
-    readr::type_convert()
+  agecat_group_results <- dplyr::bind_rows(strata_results) %>%
+    dplyr::select(-group1) %>%
+    dplyr::rename(agecat = group1_level)
 
-  agecat_sex_df <- dplyr::bind_rows(temp3f_sum %>% mutate(across(everything(), as.character)) %>% filter(stat!="logit"),
-                                    temp3f_ci %>% mutate(across(everything(), as.character)) %>% filter(stat!="logit"),
-                                    temp3m_sum %>% mutate(across(everything(), as.character)) %>% filter(stat!="logit"),
-                                    temp3m_ci %>% mutate(across(everything(), as.character)) %>% filter(stat!="logit")) %>%
-    readr::type_convert()
+  if (nrow(agecat_group_results) > 0 && all(grepl("^Stratum_", agecat_group_results$group))) {
+    uniq <- unique(agecat_group_results$group)
+    if (length(uniq) == 2) {
+      agecat_group_results$group <- dplyr::recode(
+        agecat_group_results$group,
+        !!!stats::setNames(c("Female", "Male"), uniq)
+      )
+    }
+  }
 
+  xlsx::write.xlsx(
+    overall_sex_results %>% as.data.frame(),
+    file = file,
+    row.names = FALSE,
+    sheetName = "Overall and Group",
+    append = TRUE
+  )
 
+  xlsx::write.xlsx(
+    agecat_results %>% as.data.frame(),
+    file = file,
+    row.names = FALSE,
+    sheetName = "Agecat",
+    append = TRUE
+  )
 
-
-# Pivoting! ---------------------------------------------------------------
-
-
-  overall_sex_results <- overall_sex_df %>%
-    group_by(group1, group1_level, variable, variable_level) %>%
-    summarise(n=stat[which(stat_name=="n_unweighted")],
-              N=stat[which(stat_name=="N_unweighted")],
-              estimate=stat[which(stat_name=="estimate")],
-              conf.low=stat[which(stat_name=="conf.low")],
-              conf.high=stat[which(stat_name=="conf.high")]) %>%
-    ungroup() %>%
-    select(-group1) %>%
-    rename("sex"=group1_level)
-
-  agecat_results <- agecat_df %>%
-    group_by(group1, group1_level, variable, variable_level) %>%
-    summarise(n=stat[which(stat_name=="n_unweighted")],
-              N=stat[which(stat_name=="N_unweighted")],
-              estimate=stat[which(stat_name=="estimate")],
-              conf.low=stat[which(stat_name=="conf.low")],
-              conf.high=stat[which(stat_name=="conf.high")]) %>%
-    ungroup() %>%
-    select(-group1) %>%
-    rename("agecat"=group1_level)
-
-  agecat_sex_results <- agecat_sex_df %>%
-    group_by(sex, group1, group1_level, variable, variable_level) %>%
-    summarise(n=stat[which(stat_name=="n_unweighted")],
-              N=stat[which(stat_name=="N_unweighted")],
-              estimate=stat[which(stat_name=="estimate")],
-              conf.low=stat[which(stat_name=="conf.low")],
-              conf.high=stat[which(stat_name=="conf.high")]) %>%
-    ungroup() %>%
-    select(-group1) %>%
-    rename("agecat"=group1_level)
-
-
-  xlsx::write.xlsx(overall_sex_results %>% as.data.frame(), file=file, row.names = F, sheetName = "Overall and Sex",
-                   append = TRUE)
-  xlsx::write.xlsx(agecat_results %>% as.data.frame(), file=file, row.names = F, sheetName = "Agecat",
-                   append = TRUE)
-  xlsx::write.xlsx(agecat_sex_results %>% as.data.frame(), file=file, row.names = F, sheetName = "Sex and Agecat",
-                   append = TRUE)
-
+  xlsx::write.xlsx(
+    agecat_group_results %>% as.data.frame(),
+    file = file,
+    row.names = FALSE,
+    sheetName = "Group and Agecat",
+    append = TRUE
+  )
 }
